@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>₹100 Fresh Harvest Market: Adaptive Budget Challenge</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts for grocery theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .font-fredoka {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Glow Effects */
+    .glow-emerald {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35), inset 0 0 10px rgba(16, 185, 129, 0.15);
+    }
+    
+    .glow-amber {
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35), inset 0 0 10px rgba(245, 158, 11, 0.15);
+    }
+
+    .glow-cyan {
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.35), inset 0 0 10px rgba(6, 182, 212, 0.15);
+    }
+
+    .glow-rose {
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.35), inset 0 0 10px rgba(244, 63, 94, 0.15);
+    }
+
+    /* Keyframe Animations */
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-bounce-slow {
+      animation: bounce-slow 2.2s ease-in-out infinite;
+    }
+
+    @keyframes shake-err {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .animate-shake {
+      animation: shake-err 0.4s ease-in-out;
+    }
+
+    /* Canvas overlay */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+
+    /* Market Awning & Wood Accent Styles */
+    .market-awning {
+      background: repeating-linear-gradient(
+        -45deg,
+        #052e16,
+        #052e16 25px,
+        #14532d 25px,
+        #14532d 50px,
+        #15803d 50px,
+        #15803d 75px
+      );
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.7);
+    }
+
+    .market-shelf {
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border-bottom: 4px solid #78350f;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col overflow-x-hidden selection:bg-emerald-500 selection:text-black relative">
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- MARKET STORE DECORATIVE BACKDROP -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <!-- Top Market Awning Canopy -->
+    <div class="w-full h-5 market-awning border-b-2 border-amber-500/40 opacity-90"></div>
+
+    <!-- Ambient Store Lights -->
+    <div class="absolute top-10 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px]"></div>
+    <div class="absolute top-20 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-10 left-1/3 w-80 h-80 bg-lime-500/10 rounded-full blur-[100px]"></div>
+
+    <!-- Repeating Grocery Store Pattern (Shelves, Crates, Fruits & Jars) -->
+    <svg class="w-full h-full opacity-[0.07] text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <pattern id="groceryPattern" width="120" height="120" patternUnits="userSpaceOnUse">
+          <!-- Produce Crate / Basket -->
+          <path d="M 20 20 L 40 20 L 44 35 L 16 35 Z" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <line x1="20" y1="20" x2="20" y2="35" stroke="currentColor" stroke-width="1" />
+          <line x1="30" y1="20" x2="30" y2="35" stroke="currentColor" stroke-width="1" />
+          <line x1="40" y1="20" x2="40" y2="35" stroke="currentColor" stroke-width="1" />
+
+          <!-- Apple / Fruit -->
+          <circle cx="85" cy="25" r="8" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M 85 17 Q 88 12 91 15" fill="none" stroke="currentColor" stroke-width="1.5" />
+
+          <!-- Honey Jar -->
+          <rect x="22" y="75" width="16" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <rect x="24" y="70" width="12" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" />
+
+          <!-- Store Shelf Lines -->
+          <line x1="0" y1="50" x2="120" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="4,4" />
+          <line x1="0" y1="105" x2="120" y2="105" stroke="currentColor" stroke-width="1" stroke-dasharray="4,4" />
+
+          <!-- Leaf motif -->
+          <path d="M 75 80 Q 85 70 85 85 Q 70 85 75 80 Z" fill="none" stroke="currentColor" stroke-width="1.5" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#groceryPattern)" />
+    </svg>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-emerald-900/40 px-4 py-3 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-3">
+      
+      <!-- Market Title & Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-lime-400 to-amber-400 p-0.5 shadow-lg shadow-emerald-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <i data-lucide="shopping-basket" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-fredoka font-bold text-base sm:text-xl tracking-wide bg-gradient-to-r from-emerald-400 via-lime-300 to-amber-300 bg-clip-text text-transparent">
+            FRESH HARVEST MARKET
+          </h1>
+          <p class="text-[11px] text-slate-400 font-medium">Adaptive Budgeting & Cognitive Calculation</p>
+        </div>
+      </div>
+
+      <!-- Wallet & Progress Indicators -->
+      <div class="flex items-center space-x-3">
+        
+        <!-- Cash Wallet -->
+        <div class="bg-slate-950/80 px-3.5 py-1.5 rounded-xl border border-emerald-500/40 flex items-center space-x-2 glow-emerald">
+          <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
+          <span class="text-xs text-slate-400 font-semibold uppercase">Cash:</span>
+          <span id="headerWallet" class="font-fredoka font-bold text-base text-emerald-400">₹100</span>
+        </div>
+
+        <!-- Stage Badge -->
+        <div class="bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700 flex items-center space-x-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-amber-400"></i>
+          <span id="stageBadge" class="text-xs font-fredoka font-bold text-amber-300 uppercase">STAGE 1: INITIAL CHOICE</span>
+        </div>
+
+        <!-- Sound Toggle Button -->
+        <button id="soundBtn" onclick="game.toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-300 transition-colors" title="Toggle Sound">
+          <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col space-y-6">
+
+    <!-- Grocer Manager Dialogue Box -->
+    <div id="dialogueCard" class="bg-slate-900/90 border border-emerald-900/40 rounded-2xl p-4 sm:p-5 shadow-2xl relative overflow-hidden transition-all duration-300">
+      <div class="flex items-start space-x-4">
+        
+        <!-- Grocer Avatar -->
+        <div class="relative shrink-0">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-400 via-lime-500 to-amber-400 p-0.5 shadow-lg">
+            <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+              <i data-lucide="store" class="w-8 h-8 text-emerald-400 animate-bounce-slow"></i>
+            </div>
+          </div>
+          <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-950"></span>
+        </div>
+
+        <!-- Speech Content -->
+        <div class="flex-1 space-y-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-fredoka font-bold text-sm text-emerald-400 tracking-wide flex items-center gap-1.5">
+              STORE MANAGER MAYA
+            </h3>
+            <span id="promptStepBadge" class="text-[10px] uppercase font-semibold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-md border border-slate-700">
+              Condition 1 of 4
+            </span>
+          </div>
+          <p id="dialogueText" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+            "Welcome to Fresh Harvest Market! You have <strong class="text-emerald-400">₹100</strong> in cash. You want to buy an <span class="text-amber-300 font-bold">Artisan Honey Jar (₹65)</span> and a <span class="text-lime-300 font-bold">Fresh Fruit Basket (₹40)</span>. Calculate the total cost yourself and decide if you can buy both!"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Interactive Workspace -->
+    <div class="relative bg-slate-900/80 border border-slate-800 rounded-3xl p-4 sm:p-7 flex-1 flex flex-col justify-between shadow-2xl min-h-[440px] overflow-hidden">
+      
+      <!-- Background Ambient Glows -->
+      <div class="absolute -top-32 -left-32 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-32 -right-32 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div id="gameViewport" class="relative z-10 w-full flex flex-col justify-between h-full space-y-6">
+
+        <!-- STAGE 1: INITIAL SHOPPING CONDITION -->
+        <div id="stage1" class="flex flex-col space-y-6 w-full">
+          
+          <!-- Grocery Store Items Display -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Item 1: Honey Jar -->
+            <div class="market-shelf border-2 border-slate-800 hover:border-amber-500/60 rounded-3xl p-4 flex items-center justify-between transition-all group shadow-lg">
+              <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+                  <i data-lucide="jar" class="w-7 h-7"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-fredoka text-amber-400 tracking-wider flex items-center gap-1">
+                    <i data-lucide="tag" class="w-3 h-3"></i> Organic Shelf
+                  </span>
+                  <h4 class="font-bold text-base text-white">Artisan Organic Honey</h4>
+                  <p class="text-xs text-slate-400">Pure Local Wildflower</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="font-fredoka font-bold text-xl text-amber-300">₹65</span>
+              </div>
+            </div>
+
+            <!-- Item 2: Fruit Basket -->
+            <div class="market-shelf border-2 border-slate-800 hover:border-lime-500/60 rounded-3xl p-4 flex items-center justify-between transition-all group shadow-lg">
+              <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/30 flex items-center justify-center text-lime-400 group-hover:scale-105 transition-transform">
+                  <i data-lucide="apple" class="w-7 h-7"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-fredoka text-lime-400 tracking-wider flex items-center gap-1">
+                    <i data-lucide="tag" class="w-3 h-3"></i> Fresh Produce
+                  </span>
+                  <h4 class="font-bold text-base text-white">Fresh Fruit Basket</h4>
+                  <p class="text-xs text-slate-400">Assorted Seasonal Fruits</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="font-fredoka font-bold text-xl text-lime-300">₹40</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Child Calculation Entry Box (No Answers Shown!) -->
+          <div class="bg-slate-950/90 border border-amber-500/30 rounded-3xl p-5 space-y-4 shadow-xl">
+            <div class="flex items-center space-x-2 text-amber-300 font-fredoka text-sm">
+              <i data-lucide="calculator" class="w-4 h-4"></i>
+              <span>CONDITION 1: YOUR CALCULATION TASK</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Total Cost Input -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">What is the TOTAL COST of both items? (₹)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                  <input type="number" id="c1InputTotal" placeholder="Type total cost..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-amber-400">
+                </div>
+              </div>
+
+              <!-- Buying Choice -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">Can you buy both items with your ₹100 note?</label>
+                <select id="c1InputAfford" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white font-fredoka focus:outline-none focus:border-amber-400">
+                  <option value="">-- Choose Yes or No --</option>
+                  <option value="YES">YES, I can buy both</option>
+                  <option value="NO">NO, I cannot buy both</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Difference / Deficit Input -->
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-300">If NO, how much extra money are you short by? (Enter 0 if not short)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                <input type="number" id="c1InputDiff" placeholder="Type difference in rupees..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-amber-400">
+              </div>
+            </div>
+
+            <button onclick="game.verifyCondition1()" class="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-fredoka font-bold text-sm tracking-wide transition-all shadow-lg shadow-amber-500/20 active:scale-[0.99]">
+              CHECK MY CALCULATION &rarr;
+            </button>
+
+            <div id="c1Feedback" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+
+        <!-- STAGE 2: CONDITION 1 TWIST - BUNDLE DISCOUNT -->
+        <div id="stage2" class="hidden flex-col space-y-6 w-full">
+          
+          <!-- Discount Announcement Header -->
+          <div class="p-4 bg-gradient-to-r from-emerald-500/20 via-lime-500/20 to-amber-500/20 border-2 border-dashed border-emerald-400 rounded-3xl space-y-2 text-center">
+            <span class="px-3 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-fredoka font-bold uppercase">
+              NEW INFORMATION #1: SPECIAL COMBO DEAL!
+            </span>
+            <h3 class="font-fredoka font-bold text-lg text-emerald-300">"Get ₹20 OFF when you buy the Honey Jar and Fruit Basket together!"</h3>
+            <p class="text-xs text-slate-300">Apply this coupon to your calculation. Remember: Your wallet cash is still ₹100.</p>
+          </div>
+
+          <!-- Child Calculation Entry Box -->
+          <div class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-5 space-y-4 shadow-xl">
+            <div class="flex items-center space-x-2 text-emerald-300 font-fredoka text-sm">
+              <i data-lucide="tag" class="w-4 h-4"></i>
+              <span>CONDITION 2: CALCULATE DISCOUNTED ORDER</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- New Total Cost Input -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">What is the NEW total cost after subtracting ₹20 discount? (₹)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                  <input type="number" id="c2InputTotal" placeholder="Type new total..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-emerald-400">
+                </div>
+              </div>
+
+              <!-- New Decision Choice -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">Can you buy both items now with your ₹100 note?</label>
+                <select id="c2InputAfford" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white font-fredoka focus:outline-none focus:border-emerald-400">
+                  <option value="">-- Choose Yes or No --</option>
+                  <option value="YES">YES, I can buy both now!</option>
+                  <option value="NO">NO, still cannot afford</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Change Left Input -->
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-300">How much CHANGE (remaining cash) will you get back from ₹100?</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                <input type="number" id="c2InputChange" placeholder="Type change in rupees..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-emerald-400">
+              </div>
+            </div>
+
+            <button onclick="game.verifyCondition2()" class="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-fredoka font-bold text-sm tracking-wide transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.99]">
+              CHECK MY NEW CALCULATION &rarr;
+            </button>
+
+            <div id="c2Feedback" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+
+        <!-- STAGE 3: CONDITION 2 TWIST - MANDATORY ECO BAG FEE -->
+        <div id="stage3" class="hidden flex-col space-y-6 w-full">
+          
+          <!-- Eco Bag Notice Banner -->
+          <div class="p-4 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-indigo-500/20 border-2 border-dashed border-cyan-400 rounded-3xl space-y-2 text-center">
+            <span class="px-3 py-0.5 rounded-full bg-cyan-500 text-slate-950 text-[10px] font-fredoka font-bold uppercase">
+              NEW INFORMATION #2: MANDATORY CARRY BAG FEE!
+            </span>
+            <h3 class="font-fredoka font-bold text-lg text-cyan-300">"Store Policy: A mandatory ₹10 Reusable Organic Cotton Tote Bag is added at checkout!"</h3>
+            <p class="text-xs text-slate-300">Add ₹10 to your previous discounted bill. Check your wallet balance again!</p>
+          </div>
+
+          <!-- Child Calculation Entry Box -->
+          <div class="bg-slate-950/90 border border-cyan-500/40 rounded-3xl p-5 space-y-4 shadow-xl">
+            <div class="flex items-center space-x-2 text-cyan-300 font-fredoka text-sm">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              <span>CONDITION 3: REVISED BILL WITH CARRY BAG</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Revised Total Cost Input -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">What is your REVISED total bill (Discounted Price + ₹10 Bag)? (₹)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                  <input type="number" id="c3InputTotal" placeholder="Type revised bill..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-cyan-400">
+                </div>
+              </div>
+
+              <!-- Revised Affordability Choice -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">Can you still afford everything with your ₹100 note?</label>
+                <select id="c3InputAfford" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white font-fredoka focus:outline-none focus:border-cyan-400">
+                  <option value="">-- Choose Yes or No --</option>
+                  <option value="YES">YES, still within ₹100 budget</option>
+                  <option value="NO">NO, over budget now</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- New Remaining Change Input -->
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-300">What is your REVISED remaining change now from ₹100?</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                <input type="number" id="c3InputChange" placeholder="Type remaining change..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-cyan-400">
+              </div>
+            </div>
+
+            <button onclick="game.verifyCondition3()" class="w-full py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-fredoka font-bold text-sm tracking-wide transition-all shadow-lg shadow-cyan-500/20 active:scale-[0.99]">
+              CHECK MY REVISED CALCULATION &rarr;
+            </button>
+
+            <div id="c3Feedback" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+
+        <!-- STAGE 4: CONDITION 3 TWIST - CHECKOUT IMPULSE ITEM -->
+        <div id="stage4" class="hidden flex-col space-y-6 w-full">
+          
+          <!-- Smoothie Deal Notice Banner -->
+          <div class="p-4 bg-gradient-to-r from-fuchsia-500/20 via-pink-500/20 to-rose-500/20 border-2 border-dashed border-fuchsia-400 rounded-3xl space-y-2 text-center">
+            <span class="px-3 py-0.5 rounded-full bg-fuchsia-500 text-white text-[10px] font-fredoka font-bold uppercase">
+              NEW INFORMATION #3: FLASH CHECKOUT DEAL!
+            </span>
+            <h3 class="font-fredoka font-bold text-lg text-fuchsia-300">"At the register: A Fresh Mango Smoothie (regular ₹25) is on flash sale for ₹15!"</h3>
+            <p class="text-xs text-slate-300">You want to add the ₹15 smoothie to your current purchase. Calculate the grand total!</p>
+          </div>
+
+          <!-- Child Calculation Entry Box -->
+          <div class="bg-slate-950/90 border border-fuchsia-500/40 rounded-3xl p-5 space-y-4 shadow-xl">
+            <div class="flex items-center space-x-2 text-fuchsia-300 font-fredoka text-sm">
+              <i data-lucide="cup-soda" class="w-4 h-4"></i>
+              <span>CONDITION 4: GRAND TOTAL WITH SMOOTHIE</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Grand Total Input -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">What is the GRAND TOTAL (Previous Bill + ₹15 Smoothie)? (₹)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                  <input type="number" id="c4InputTotal" placeholder="Type grand total..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-fuchsia-400">
+                </div>
+              </div>
+
+              <!-- Grand Total Affordability Choice -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">Can you buy ALL 3 items + bag with your original ₹100 note?</label>
+                <select id="c4InputAfford" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white font-fredoka focus:outline-none focus:border-fuchsia-400">
+                  <option value="">-- Choose Yes or No --</option>
+                  <option value="YES">YES, I can buy everything</option>
+                  <option value="NO">NO, ₹100 is not enough</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Deficit/Shortage Input -->
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-slate-300">If NO, how much ADDITIONAL cash do you need to buy everything?</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-slate-400 font-bold">₹</span>
+                <input type="number" id="c4InputDeficit" placeholder="Type extra money needed..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm text-white font-fredoka focus:outline-none focus:border-fuchsia-400">
+              </div>
+            </div>
+
+            <button onclick="game.verifyCondition4()" class="w-full py-3 rounded-2xl bg-fuchsia-500 hover:bg-fuchsia-400 text-white font-fredoka font-bold text-sm tracking-wide transition-all shadow-lg shadow-fuchsia-500/20 active:scale-[0.99]">
+              CHECK MY FINAL STORE CALCULATION &rarr;
+            </button>
+
+            <div id="c4Feedback" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+
+        <!-- STAGE 5: STRATEGY & COGNITIVE REFLECTION QUESTIONNAIRE -->
+        <div id="stageReflection" class="hidden flex-col space-y-6 w-full max-w-3xl mx-auto">
+          
+          <div class="text-center space-y-1">
+            <span class="px-3 py-1 rounded-full text-xs font-fredoka font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              COGNITIVE REFLECTION
+            </span>
+            <h3 class="font-fredoka font-bold text-xl sm:text-2xl text-white">REASONING & STRATEGY ANALYSIS</h3>
+            <p class="text-xs text-slate-400">Reflect on how your calculations adapted across the 4 conditions!</p>
+          </div>
+
+          <!-- 4 Reflection Questions Grid -->
+          <div class="space-y-4">
+            
+            <!-- Question 1 -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2">
+              <label class="font-bold text-xs sm:text-sm text-amber-300 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-fredoka text-xs">1</span>
+                What changed throughout your store visit?
+              </label>
+              <select id="refQ1" onchange="game.checkReflectionAnswers()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-400">
+                <option value="">-- Select your response --</option>
+                <option value="A">New price information (discount, bag fee, smoothie deal) modified the total bill dynamically.</option>
+                <option value="B">My wallet cash increased from ₹100 to ₹200 automatically.</option>
+                <option value="C">The shopkeeper kept changing the item names randomly.</option>
+              </select>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2">
+              <label class="font-bold text-xs sm:text-sm text-emerald-300 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-fredoka text-xs">2</span>
+                Did your buying decision change between conditions?
+              </label>
+              <select id="refQ2" onchange="game.checkReflectionAnswers()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-400">
+                <option value="">-- Select your response --</option>
+                <option value="YES">Yes! It shifted from NO (over budget) to YES (after discount) to NO (when smoothie was added).</option>
+                <option value="NO">No, my answer stayed 'YES' the entire time without changing.</option>
+              </select>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2">
+              <label class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-fredoka text-xs">3</span>
+                What math operations did you need to perform?
+              </label>
+              <select id="refQ3" onchange="game.checkReflectionAnswers()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400">
+                <option value="">-- Select your response --</option>
+                <option value="MATH">Addition (item totals, bag fee, smoothie) and Subtraction (discount, remaining change, deficits).</option>
+                <option value="OTHER">Only multiplication and division of large prime numbers.</option>
+              </select>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2">
+              <label class="font-bold text-xs sm:text-sm text-fuchsia-300 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-fuchsia-500/20 text-fuchsia-400 flex items-center justify-center font-fredoka text-xs">4</span>
+                Why is calculating step-by-step essential before reaching checkout?
+              </label>
+              <select id="refQ4" onchange="game.checkReflectionAnswers()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-fuchsia-400">
+                <option value="">-- Select your response --</option>
+                <option value="STRAT">It ensures you stay within your budget limit and avoid unexpected cash shortages at checkout.</option>
+                <option value="GUESS">It doesn't matter because prices always stay the same forever.</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Finish Reflection Button -->
+          <button id="btnFinishReflection" disabled onclick="game.completeReflection()" class="w-full py-4 rounded-2xl bg-slate-800 text-slate-500 font-fredoka font-bold text-sm uppercase tracking-wider transition-all cursor-not-allowed">
+            COMPLETE ASSESSMENT & UNLOCK BUDGET LAB
+          </button>
+
+        </div>
+
+        <!-- STAGE 6: CUSTOM BUDGET LAB SANDBOX -->
+        <div id="stageSandbox" class="hidden flex-col space-y-6 w-full">
+          
+          <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-md text-[10px] font-fredoka font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                MASTERY UNLOCKED
+              </span>
+              <h3 class="font-fredoka font-bold text-lg text-white mt-1">CUSTOM GROCERY BUDGET LAB</h3>
+            </div>
+            <button onclick="game.resetQuest()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 font-semibold flex items-center gap-1.5 transition-colors">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Replay Quest
+            </button>
+          </div>
+
+          <!-- Sandbox Sliders & Controls -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+              <label class="text-xs font-semibold text-slate-400">Wallet Cash (₹)</label>
+              <input type="range" id="sbWallet" min="50" max="250" step="10" value="100" oninput="game.updateSandbox()" class="w-full accent-emerald-500">
+              <div class="flex justify-between font-fredoka text-xs text-emerald-400 font-bold">
+                <span>Wallet:</span>
+                <span id="sbWalletVal">₹100</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+              <label class="text-xs font-semibold text-slate-400">Items (Honey + Fruit Basket)</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="sbItem1Cost" value="65" oninput="game.updateSandbox()" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-center font-fredoka text-amber-300">
+                <input type="number" id="sbItem2Cost" value="40" oninput="game.updateSandbox()" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-center font-fredoka text-lime-300">
+              </div>
+            </div>
+
+            <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+              <label class="text-xs font-semibold text-slate-400">Combo Discount (₹)</label>
+              <input type="range" id="sbDiscount" min="0" max="50" step="5" value="20" oninput="game.updateSandbox()" class="w-full accent-amber-400">
+              <div class="flex justify-between font-fredoka text-xs text-amber-400 font-bold">
+                <span>Discount:</span>
+                <span id="sbDiscountVal">₹20</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Interactive Calculation Tester Box in Sandbox -->
+          <div class="bg-slate-950/90 p-5 rounded-3xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-fredoka font-bold text-amber-400 uppercase">Test Your Sandbox Math Skills:</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label class="text-slate-400">Enter your calculated net total:</label>
+                <input type="number" id="sbChildNet" placeholder="Calculate (Item1 + Item2 - Discount)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 mt-1 text-white font-fredoka">
+              </div>
+              <div class="flex items-end">
+                <button onclick="game.verifySandboxChildMath()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-fredoka font-bold rounded-xl">
+                  VERIFY MY SANDBOX CALCULATION
+                </button>
+              </div>
+            </div>
+            <div id="sbFeedback" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Bottom Status Bar -->
+      <div class="relative z-10 w-full pt-4 border-t border-slate-800/80 flex flex-wrap justify-between items-center gap-3 text-xs text-slate-400">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>Cognitive Skill: <strong class="text-slate-200 font-semibold">Adaptive Budgeting & Sequential Math</strong></span>
+        </div>
+        
+        <div class="text-right">
+          <span>Target Group: <strong>Ages 10-12</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      playChime() {
+        this.playTone(523.25, 'triangle', 0.1, 0.12);
+        setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.12), 80);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.2, 0.15), 160);
+      }
+
+      playBuzzer() {
+        this.playTone(180, 'sawtooth', 0.25, 0.15);
+      }
+
+      playSuccess() {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.22, 0.14), i * 90);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    class ConfettiManager {
+      constructor() {
+        this.canvas = document.getElementById('confettiCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.animId = null;
+
+        window.addEventListener('resize', () => this.resize());
+        this.resize();
+      }
+
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      burst() {
+        this.particles = [];
+        const colors = ['#10b981', '#06b6d4', '#f59e0b', '#ec4899', '#84cc16'];
+        for (let i = 0; i < 70; i++) {
+          this.particles.push({
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 3,
+            vx: (Math.random() - 0.5) * 12,
+            vy: (Math.random() - 0.7) * 14,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rSpeed: (Math.random() - 0.5) * 10,
+            alpha: 1
+          });
+        }
+
+        if (!this.animId) this.animate();
+      }
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let active = false;
+
+        this.particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.3;
+          p.alpha -= 0.012;
+          p.rotation += p.rSpeed;
+
+          if (p.alpha > 0) {
+            active = true;
+            this.ctx.save();
+            this.ctx.globalAlpha = Math.max(0, p.alpha);
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate((p.rotation * Math.PI) / 180);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            this.ctx.restore();
+          }
+        });
+
+        if (active) {
+          this.animId = requestAnimationFrame(() => this.animate());
+        } else {
+          this.animId = null;
+        }
+      }
+    }
+
+    const confetti = new ConfettiManager();
+
+    class GroceryBudgetGame {
+      constructor() {
+        // Core baseline values
+        this.wallet = 100;
+        this.item1 = 65; // Honey Jar
+        this.item2 = 40; // Fruit Basket
+        this.discount = 20; // Bundle Discount
+        this.bagFee = 10;  // Carry Bag
+        this.smoothie = 15; // Mango Smoothie
+
+        this.stage = 1; // 1, 2, 3, 4, 5 (Reflection), 6 (Sandbox)
+
+        this.initUI();
+      }
+
+      initUI() {
+        lucide.createIcons();
+        this.showStage(1);
+      }
+
+      toggleSound() {
+        sound.muted = !sound.muted;
+        const icon = document.getElementById('soundIcon');
+        if (sound.muted) {
+          icon.setAttribute('data-lucide', 'volume-x');
+        } else {
+          icon.setAttribute('data-lucide', 'volume-2');
+          sound.playTone(440, 'sine', 0.1);
+        }
+        lucide.createIcons();
+      }
+
+      hideAllStages() {
+        ['stage1', 'stage2', 'stage3', 'stage4', 'stageReflection', 'stageSandbox'].forEach(id => {
+          document.getElementById(id).classList.add('hidden');
+          document.getElementById(id).classList.remove('flex');
+        });
+      }
+
+      showStage(num) {
+        this.hideAllStages();
+        this.stage = num;
+        
+        let targetId = `stage${num}`;
+        if (num === 5) targetId = 'stageReflection';
+        if (num === 6) targetId = 'stageSandbox';
+
+        const el = document.getElementById(targetId);
+        el.classList.remove('hidden');
+        el.classList.add('flex');
+      }
+
+      /* CONDITION 1 VALIDATION */
+      verifyCondition1() {
+        const totalInput = parseInt(document.getElementById('c1InputTotal').value);
+        const affordChoice = document.getElementById('c1InputAfford').value;
+        const diffInput = parseInt(document.getElementById('c1InputDiff').value);
+
+        const feedback = document.getElementById('c1Feedback');
+        feedback.classList.remove('hidden');
+
+        // Correct baseline math: 65 + 40 = 105, Afford = NO, Short by = 5
+        const isTotalCorrect = (totalInput === 105);
+        const isAffordCorrect = (affordChoice === 'NO');
+        const isDiffCorrect = (diffInput === 5);
+
+        if (isTotalCorrect && isAffordCorrect && isDiffCorrect) {
+          sound.playChime();
+          feedback.className = "p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-between";
+          feedback.innerHTML = `
+            <span><strong>SPOT ON CALCULATION!</strong> Total cost is ₹105, which is ₹5 more than your ₹100 note.</span>
+            <button onclick="game.goToStage2()" class="ml-2 px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-fredoka font-bold text-xs rounded-xl shadow-md">
+              NEXT CONDITION &rarr;
+            </button>
+          `;
+        } else {
+          sound.playBuzzer();
+          document.getElementById('stage1').classList.add('animate-shake');
+          setTimeout(() => document.getElementById('stage1').classList.remove('animate-shake'), 450);
+
+          feedback.className = "p-3 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300";
+          feedback.innerHTML = `<strong>RE-CHECK YOUR MATH!</strong> Add ₹65 (Honey) + ₹40 (Fruit Basket). Compare that total with your ₹100 note and calculate how much you are short!`;
+        }
+      }
+
+      goToStage2() {
+        sound.playChime();
+        this.showStage(2);
+        document.getElementById('stageBadge').textContent = "STAGE 2: BUNDLE DISCOUNT";
+        document.getElementById('promptStepBadge').textContent = "Condition 2 of 4";
+        document.getElementById('dialogueText').innerHTML = `
+          "NEW INFORMATION #1! I am giving you a special store coupon: <strong class='text-emerald-300 font-fredoka'>₹20 OFF</strong> when buying the Honey Jar and Fruit Basket together! Re-calculate the total and check if you can buy both now!"
+        `;
+      }
+
+      /* CONDITION 2 VALIDATION */
+      verifyCondition2() {
+        const totalInput = parseInt(document.getElementById('c2InputTotal').value);
+        const affordChoice = document.getElementById('c2InputAfford').value;
+        const changeInput = parseInt(document.getElementById('c2InputChange').value);
+
+        const feedback = document.getElementById('c2Feedback');
+        feedback.classList.remove('hidden');
+
+        // Correct baseline math: 105 - 20 = 85, Afford = YES, Change = 15
+        const isTotalCorrect = (totalInput === 85);
+        const isAffordCorrect = (affordChoice === 'YES');
+        const isChangeCorrect = (changeInput === 15);
+
+        if (isTotalCorrect && isAffordCorrect && isChangeCorrect) {
+          sound.playChime();
+          feedback.className = "p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-between";
+          feedback.innerHTML = `
+            <span><strong>GREAT RE-CALCULATION!</strong> ₹105 - ₹20 = ₹85. Since ₹85 ≤ ₹100, you get ₹15 change!</span>
+            <button onclick="game.goToStage3()" class="ml-2 px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-fredoka font-bold text-xs rounded-xl shadow-md">
+              NEXT CONDITION &rarr;
+            </button>
+          `;
+        } else {
+          sound.playBuzzer();
+          document.getElementById('stage2').classList.add('animate-shake');
+          setTimeout(() => document.getElementById('stage2').classList.remove('animate-shake'), 450);
+
+          feedback.className = "p-3 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300";
+          feedback.innerHTML = `<strong>RE-CHECK DISCOUNT MATH!</strong> Subtract ₹20 from your previous total of ₹105. Then subtract that new price from your ₹100 cash to find your change!`;
+        }
+      }
+
+      goToStage3() {
+        sound.playChime();
+        this.showStage(3);
+        document.getElementById('stageBadge').textContent = "STAGE 3: ECO BAG FEE";
+        document.getElementById('promptStepBadge').textContent = "Condition 3 of 4";
+        document.getElementById('dialogueText').innerHTML = `
+          "NEW INFORMATION #2! City store guidelines mandate adding a <strong class='text-cyan-300 font-fredoka'>₹10 Reusable Carry Bag fee</strong> to your order. Add ₹10 to your discounted bill and re-calculate your remaining cash!"
+        `;
+      }
+
+      /* CONDITION 3 VALIDATION */
+      verifyCondition3() {
+        const totalInput = parseInt(document.getElementById('c3InputTotal').value);
+        const affordChoice = document.getElementById('c3InputAfford').value;
+        const changeInput = parseInt(document.getElementById('c3InputChange').value);
+
+        const feedback = document.getElementById('c3Feedback');
+        feedback.classList.remove('hidden');
+
+        // Correct baseline math: 85 + 10 = 95, Afford = YES, Change = 5
+        const isTotalCorrect = (totalInput === 95);
+        const isAffordCorrect = (affordChoice === 'YES');
+        const isChangeCorrect = (changeInput === 5);
+
+        if (isTotalCorrect && isAffordCorrect && isChangeCorrect) {
+          sound.playChime();
+          feedback.className = "p-3 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-between";
+          feedback.innerHTML = `
+            <span><strong>ACCURATE REVISION!</strong> ₹85 + ₹10 = ₹95 total. You can still buy everything with ₹5 change remaining!</span>
+            <button onclick="game.goToStage4()" class="ml-2 px-3.5 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-fredoka font-bold text-xs rounded-xl shadow-md">
+              FINAL CONDITION &rarr;
+            </button>
+          `;
+        } else {
+          sound.playBuzzer();
+          document.getElementById('stage3').classList.add('animate-shake');
+          setTimeout(() => document.getElementById('stage3').classList.remove('animate-shake'), 450);
+
+          feedback.className = "p-3 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300";
+          feedback.innerHTML = `<strong>RE-CHECK CARRY BAG MATH!</strong> Add ₹10 to your previous discounted bill of ₹85. Then calculate how much change is left from ₹100!`;
+        }
+      }
+
+      goToStage4() {
+        sound.playChime();
+        this.showStage(4);
+        document.getElementById('stageBadge').textContent = "STAGE 4: CHECKOUT SMOOTHIE";
+        document.getElementById('promptStepBadge').textContent = "Condition 4 of 4";
+        document.getElementById('dialogueText').innerHTML = `
+          "NEW INFORMATION #3! Right at the register, you spot a <strong class='text-fuchsia-300 font-fredoka'>Fresh Mango Smoothie on flash sale for ₹15</strong>! Calculate the grand total if you add the smoothie to your order."
+        `;
+      }
+
+      /* CONDITION 4 VALIDATION */
+      verifyCondition4() {
+        const totalInput = parseInt(document.getElementById('c4InputTotal').value);
+        const affordChoice = document.getElementById('c4InputAfford').value;
+        const deficitInput = parseInt(document.getElementById('c4InputDeficit').value);
+
+        const feedback = document.getElementById('c4Feedback');
+        feedback.classList.remove('hidden');
+
+        // Correct baseline math: 95 + 15 = 110, Afford = NO, Extra needed = 10
+        const isTotalCorrect = (totalInput === 110);
+        const isAffordCorrect = (affordChoice === 'NO');
+        const isDeficitCorrect = (deficitInput === 10);
+
+        if (isTotalCorrect && isAffordCorrect && isDeficitCorrect) {
+          sound.playSuccess();
+          confetti.burst();
+          feedback.className = "p-3 rounded-2xl bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300 flex items-center justify-between";
+          feedback.innerHTML = `
+            <span><strong>MASTERFUL SHOPPING MATH!</strong> Grand total is ₹110. You are ₹10 short of your ₹100 budget!</span>
+            <button onclick="game.openReflection()" class="ml-2 px-4 py-1.5 bg-gradient-to-r from-fuchsia-400 to-amber-400 text-slate-950 font-fredoka font-bold text-xs rounded-xl shadow-md">
+              START REFLECTION &rarr;
+            </button>
+          `;
+        } else {
+          sound.playBuzzer();
+          document.getElementById('stage4').classList.add('animate-shake');
+          setTimeout(() => document.getElementById('stage4').classList.remove('animate-shake'), 450);
+
+          feedback.className = "p-3 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300";
+          feedback.innerHTML = `<strong>RE-CHECK GRAND TOTAL!</strong> Add ₹15 (Smoothie) to your previous bill of ₹95. Compare ₹110 with your ₹100 note!`;
+        }
+      }
+
+      openReflection() {
+        sound.playChime();
+        this.showStage(5);
+        document.getElementById('stageBadge').textContent = "STAGE 5: REFLECTION";
+        document.getElementById('promptStepBadge').textContent = "Assessment";
+        document.getElementById('dialogueText').innerHTML = `
+          "Congratulations on working through all 4 dynamic conditions! Now reflect on how your math strategy adapted along the way."
+        `;
+      }
+
+      checkReflectionAnswers() {
+        const q1 = document.getElementById('refQ1').value;
+        const q2 = document.getElementById('refQ2').value;
+        const q3 = document.getElementById('refQ3').value;
+        const q4 = document.getElementById('refQ4').value;
+
+        const btn = document.getElementById('btnFinishReflection');
+
+        if (q1 === 'A' && q2 === 'YES' && q3 === 'MATH' && q4 === 'STRAT') {
+          btn.disabled = false;
+          btn.className = "w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-400 via-lime-400 to-amber-400 text-slate-950 font-fredoka font-bold text-sm uppercase tracking-wider transition-all shadow-xl shadow-emerald-500/30 cursor-pointer hover:brightness-110 glow-emerald";
+        } else {
+          btn.disabled = true;
+          btn.className = "w-full py-4 rounded-2xl bg-slate-800 text-slate-500 font-fredoka font-bold text-sm uppercase tracking-wider transition-all cursor-not-allowed";
+        }
+      }
+
+      completeReflection() {
+        sound.playSuccess();
+        confetti.burst();
+
+        this.showStage(6);
+        document.getElementById('stageBadge').textContent = "UNLOCKED: BUDGET LAB";
+        document.getElementById('dialogueText').innerHTML = `
+          "🎉 MASTERY ACHIEVED! You are now a certified **Adaptive Budgeting Master**! Test custom store scenarios in the lab below."
+        `;
+        this.updateSandbox();
+      }
+
+      updateSandbox() {
+        const wallet = parseInt(document.getElementById('sbWallet').value);
+        const disc = parseInt(document.getElementById('sbDiscount').value);
+
+        document.getElementById('sbWalletVal').textContent = `₹${wallet}`;
+        document.getElementById('sbDiscountVal').textContent = `₹${disc}`;
+      }
+
+      verifySandboxChildMath() {
+        const wallet = parseInt(document.getElementById('sbWallet').value);
+        const item1 = parseInt(document.getElementById('sbItem1Cost').value) || 0;
+        const item2 = parseInt(document.getElementById('sbItem2Cost').value) || 0;
+        const disc = parseInt(document.getElementById('sbDiscount').value);
+
+        const childNet = parseInt(document.getElementById('sbChildNet').value);
+        const actualNet = Math.max(0, (item1 + item2) - disc);
+
+        const fb = document.getElementById('sbFeedback');
+        fb.classList.remove('hidden');
+
+        if (childNet === actualNet) {
+          sound.playSuccess();
+          const change = wallet - actualNet;
+          fb.className = "p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300";
+          if (change >= 0) {
+            fb.innerHTML = `<strong>CORRECT!</strong> Net total is ₹${actualNet}. With your ₹${wallet} wallet, you can afford it with ₹${change} change remaining!`;
+          } else {
+            fb.innerHTML = `<strong>CORRECT MATH!</strong> Net total is ₹${actualNet}. However, with a ₹${wallet} wallet, you are short by ₹${Math.abs(change)}.`;
+          }
+        } else {
+          sound.playBuzzer();
+          fb.className = "p-3 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300";
+          fb.innerHTML = `<strong>NOT QUITE!</strong> Net total should be (Item 1: ₹${item1} + Item 2: ₹${item2}) - Discount: ₹${disc}. Try recalculating!`;
+        }
+      }
+
+      resetQuest() {
+        ['c1InputTotal', 'c1InputDiff', 'c2InputTotal', 'c2InputChange', 'c3InputTotal', 'c3InputChange', 'c4InputTotal', 'c4InputDeficit', 'sbChildNet'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+
+        ['c1InputAfford', 'c2InputAfford', 'c3InputAfford', 'c4InputAfford', 'refQ1', 'refQ2', 'refQ3', 'refQ4'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+
+        ['c1Feedback', 'c2Feedback', 'c3Feedback', 'c4Feedback', 'sbFeedback'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('hidden');
+        });
+
+        this.showStage(1);
+        document.getElementById('stageBadge').textContent = "STAGE 1: INITIAL CHOICE";
+        document.getElementById('promptStepBadge').textContent = "Condition 1 of 4";
+        document.getElementById('dialogueText').innerHTML = `
+          "Welcome to Fresh Harvest Market! You have <strong class='text-emerald-400'>₹100</strong> in cash. You want to buy an <span class='text-amber-300 font-bold'>Artisan Honey Jar (₹65)</span> and a <span class='text-lime-300 font-bold'>Fresh Fruit Basket (₹40)</span>. Calculate the total cost yourself and decide if you can buy both!"
+        `;
+      }
+    }
+
+    let game;
+    window.addEventListener('DOMContentLoaded', () => {
+      game = new GroceryBudgetGame();
+    });
+  </script>
+</body>
+</html>
